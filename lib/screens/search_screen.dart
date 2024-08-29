@@ -3,9 +3,9 @@ import 'package:taller2_corregido/screens/destination.dart';
 
 // Lista de ciudades importantes del mundo
 const List<String> _cities = <String>[
-  'Nueva York', 'Londres', 'París', 'Tokio', 'Sídney', 'Los Ángeles', 'Roma', 'Barcelona', 'Berlín', 'Dubái',
-  'Toronto', 'San Francisco', 'Hong Kong', 'Singapur', 'Ámsterdam', 'Madrid', 'Buenos Aires', 'São Paulo',
-  'Moscú', 'Estambul', 'Seúl', 'Viena', 'Copenhague', 'Sao Paulo', 'Lima', 'Mexico City',
+  'New York', 'Londres', 'Paris', 'Tokio', 'Sídney', 'Los Ángeles', 'Roma', 'Barcelona', 'Berlín', 'Dubaí',
+  'Toronto', 'San Francisco', 'Hong Kong', 'Singapur', 'Ámsterdam', 'Madrid', 'Buenos Aires', 'Cairo',
+  'Moscú', 'Estambul', 'Seúl', 'Viena', 'Copenhague', 'Sao Paulo', 'Lima', 'Mexico City', 'Whashington DC',
 ];
 
 class SearchScreen extends StatefulWidget {
@@ -36,16 +36,26 @@ class SearchScreenState extends State<SearchScreen> {
   }
 
   void _search() {
-    int.tryParse(_adultsController.text);
-    int.tryParse(_childrenController.text);
+  final searchQuery = _searchController.text.toLowerCase();
 
-    setState(() {
-      filteredDestinations = widget.destinations.where((destination) {
-        // Lógica de filtrado si es necesario
-        return true; // Reemplaza con la lógica real de filtrado
-      }).toList();
-    });
-  }
+  setState(() {
+    // Filtra las destinaciones según la búsqueda
+    filteredDestinations = widget.destinations.where((destination) {
+      return destination.name.toLowerCase().contains(searchQuery);
+    }).toList();
+
+    // Si la lista está vacía, muestra un mensaje
+    if (filteredDestinations.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('El lugar que buscas no se encuentra registrado.'),
+        ),
+      );
+    }
+  });
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -141,18 +151,19 @@ class SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  int.tryParse(_adultsController.text);
-                  int.tryParse(_childrenController.text);
+  padding: const EdgeInsets.all(16.0),
+  child: ElevatedButton(
+    onPressed: () {
+      int.tryParse(_adultsController.text);
+      int.tryParse(_childrenController.text);
 
-                  // Usa los valores para filtrar o realizar otras acciones
-                  _search();
-                },
-                child: const Text('Buscar'),
-              ),
-            ),
+      // Filtra las destinaciones basadas en la búsqueda
+      _search();
+    },
+    child: const Text('Buscar'),
+  ),
+),
+
             const SizedBox(height: 16.0),
             Padding(
               padding: const EdgeInsets.all(16.0),
